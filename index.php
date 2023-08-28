@@ -1,80 +1,100 @@
-<?php 
+<?php
 
-    // $alph = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
-    $alph = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrustuvwxz";
-     $result = [];
-    $encoded = false;
-
-    if(isset($_POST['encode'])){
-        $input = $_POST['name'];
-        // $length = sizeof($alph);
-
-        if($input !== ""){
-            for($i = 0; $i < strlen($input); $i++)
-            {
-                for($j = 0; $j < strlen($alph); $j++){
-                    if($alph[$j] === $input[$i]){
-                        $num = $j+1;
-                        // $val = (string)$num;
-                        // echo $val.'=>'.$input[$i]."<br>";
-                        // $result .= $val." ";
-                        $result[] = $num; 
+// $array = (range('A','Z'));
+if(isset($_POST['encode'])){
+    $input = $_POST['name'];
+    if($input === ""){
+        echo "No Input!";
+    }
+    else{
+        for($i=0;$i<strlen($input);$i++){
+            // echo $input[$i].'<br>';
+            
+            if(ctype_upper($input[$i])){
+                    $value = ord($input[$i]);
+                    $value = $value-64;
+                    if($value < 10){
+                        $result = "0".strval($value);
                     }
+                    else{
+                        $result = strval($value);
+                    }
+                    // echo $value.' ';
+                    $array[] = $result;
                 }
+            else{
+                $value = ord($input[$i]);
+                $value = $value-65-5;
+                // echo $value.' ';
+                $array[] = $value;
             }
-            // var_dump($result);
-            // echo $result;
-            $encoded = true;
         }
-        else{
-            $errormsg = "No Inputs";
+        // $encoded = true;
+    }
+}
+
+if(isset($_POST['decode'])){
+    $input1 = strval($_POST['name1']);
+    if($input1 === ""){
+        echo "N0 Input!";
+    }
+    else{
+        // $input1 = explode(" ", $input1);
+        for($i=0;$i<strlen($input1);$i=$i+2){
+            $num1 = $input1[$i];
+            $num2 = $input1[$i+1];
+            $value1 = $num1.$num2;
+            $array1[] = $value1;
+            // foreach($array1 as $val2){
+            //     echo $val2." ";
+            // }
         }
-        // echo "<br>";
-        // var_dump($alph);
-        // echo '<a href="decode.php">Decode</a>';
+        for($i=0;$i<count($array1);$i++){
+            // echo $val1.'<br>';
+            $num = intval($array1[$i]);
+            if($num <= 26){
+                $num = $num+64;
+                $val1 = chr($num);
+                $array2[] = $val1;
+            }
+            if($num >= 27 && $num <= 56){
+                $num = $num+70;
+                $val1 = chr($num);
+                $array2[] = $val1;
+            }
+        }
     }
-
-    if(isset($_POST['decode'])){
-       var_dump($result);
-    }
-
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <form action="" method="post">
-        <label for="name" value="<?php echo $input; ?>">Input: </label>
-        <input type="text" name="name" id="name">
-
-        <?php
-            if($errormsg !== ""){
-                echo $errormsg;
-                $errormsg = "";
-            }
-        ?>
-
-        <div class="btn">
-        <button type="submit" name="encode">Encode</button>
-        </div>
-        <p>Your Result:</p>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Encode Decode</title>
+    </head>
+    <body>
+        <form action="" method="post">
+            <label for="name">Input: </label>
+            <input type="text" name="name" id="name" value="<?php echo $input; ?>">
+            <button name="encode">Encode</button>
+            <br>
+            <label for="name1">Input: </label>
+            <input type="text" name="name1" id="name1">
+            <button name="decode">Decode</button>
+            <br>
+            <?php
+                foreach($array2 as $val){
+                    echo $val;
+                }
+            ?>
+        </form>
         <?php 
-            foreach($result as $values){
-                echo $values." ";
-            }
-            // var_dump($result);
+                foreach($array as $val)
+                {
+                    echo $val;  
+                }
         ?>
-        <?php 
-            if($encoded === true){
-                echo '<button type="submit" name="decode">Decode</button>';
-            }
-        ?>
-    </form>
-    
-    
-</body>
+    </body>
 </html>
